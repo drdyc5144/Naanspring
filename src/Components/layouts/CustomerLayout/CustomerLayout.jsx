@@ -15,7 +15,6 @@ import {
   FaKey,
 } from "react-icons/fa";
 import Navbar from "../../../Components/layout/Navbar/Navbar";
-import Footer from "../../../Components/layout/Footer/Footer";
 import { useAuth } from "../../../Hooks/useAuth";
 
 const CustomerLayout = () => {
@@ -48,103 +47,113 @@ const CustomerLayout = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* Navbar - Fixed at top */}
       <Navbar />
 
-      <div className="flex-grow pt-16">
-        <div className="container-custom py-6">
-          <div className="flex gap-6">
-            {/* Sidebar Toggle (Mobile) */}
-            {isMobile && (
-              <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="fixed bottom-4 right-4 z-50 bg-primary-800 text-white p-3 rounded-full shadow-lg lg:hidden"
-              >
-                {isSidebarOpen ? (
-                  <FaTimes className="w-5 h-5" />
-                ) : (
-                  <FaBars className="w-5 h-5" />
-                )}
-              </button>
+      <div className="flex flex-1 pt-16">
+        {/* Mobile Sidebar Toggle Button */}
+        {isMobile && (
+          <button
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="fixed bottom-4 right-4 z-50 bg-primary-800 text-white p-3 rounded-full shadow-lg lg:hidden"
+          >
+            {isSidebarOpen ? (
+              <FaTimes className="w-5 h-5" />
+            ) : (
+              <FaBars className="w-5 h-5" />
             )}
+          </button>
+        )}
 
-            {/* Sidebar */}
-            <aside
-              className={`
-                lg:block lg:w-64 lg:sticky lg:top-20 lg:self-start
-                fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300
-                ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-                lg:translate-x-0
-                pt-20
-              `}
-            >
-              <div className="h-full overflow-y-auto px-4 pb-6">
-                {/* User Info */}
-                <div className="mb-6 p-4 bg-primary-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-primary-800 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                      {useAuth().user?.firstName?.charAt(0) || "U"}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-800">
-                        {useAuth().user?.firstName} {useAuth().user?.lastName}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {useAuth().user?.email}
-                      </p>
-                    </div>
-                  </div>
+        {/* Sidebar - Fixed */}
+        <aside
+          className={`
+            fixed left-0 top-16 bottom-0 z-40
+            w-64 bg-white shadow-lg
+            transform transition-transform duration-300
+            overflow-y-auto
+            ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0
+          `}
+        >
+          <div className="h-full px-4 py-6 overflow-y-auto">
+            {/* User Info */}
+            <div className="mb-6 p-4 bg-primary-50 rounded-xl">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-primary-800 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                  {user?.firstName?.charAt(0) || "U"}
                 </div>
+                <div>
+                  <p className="font-semibold text-gray-800">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-sm text-gray-500">{user?.email}</p>
+                </div>
+              </div>
+            </div>
 
-                {/* Navigation */}
-                <nav className="space-y-1">
-                  {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = location.pathname === item.to;
-                    return (
-                      <Link
-                        key={item.to}
-                        to={item.to}
-                        className={`
-                          flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
-                          ${
-                            isActive
-                              ? "bg-primary-50 text-primary-800 font-medium"
-                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
-                          }
-                        `}
-                      >
-                        <Icon className="w-5 h-5" />
-                        <span>{item.label}</span>
-                      </Link>
-                    );
-                  })}
-                </nav>
-
-                {/* Logout */}
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <button
-                    onClick={logout}
-                    className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+            {/* Navigation */}
+            <nav className="space-y-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.to;
+                return (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={`
+                      flex items-center gap-3 px-4 py-3 rounded-lg transition-colors
+                      ${
+                        isActive
+                          ? "bg-primary-50 text-primary-800 font-medium"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+                      }
+                    `}
                   >
-                    <FaSignOutAlt className="w-5 h-5" />
-                    <span>Logout</span>
-                  </button>
-                </div>
-              </div>
-            </aside>
+                    <Icon className="w-5 h-5" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
 
-            {/* Main Content */}
-            <main className="flex-1 min-w-0">
-              <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6">
-                <Outlet />
-              </div>
-            </main>
+            {/* Logout */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <button
+                onClick={logout}
+                className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <FaSignOutAlt className="w-5 h-5" />
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
-        </div>
-      </div>
+        </aside>
 
-      <Footer />
+        {/* Mobile Overlay */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
+        {/* Main Content */}
+        <main
+          className={`
+          flex-1 min-h-screen w-full
+          lg:ml-64
+          transition-all duration-300
+        `}
+        >
+          <div className="p-4 sm:p-6">
+            <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6">
+              <Outlet />
+            </div>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

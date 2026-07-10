@@ -17,8 +17,7 @@ import {
   FaKey,
   FaTag,
 } from "react-icons/fa";
-import Navbar from "../../../Components/layout/Navbar/Navbar";
-// import Footer from "../../../Components/layout/Footer/Footer"; // ❌ Remove this
+import AdminNavbar from "../../../Components/layout/AdminNavbar/AdminNavbar";
 import { useAuth } from "../../../Hooks/useAuth";
 
 const AdminLayout = () => {
@@ -57,8 +56,7 @@ const AdminLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Navbar - Fixed at top */}
-      <Navbar />
-
+      <AdminNavbar /> {/* ✅ Changed from Navbar to AdminNavbar */}
       <div className="flex flex-1 pt-16">
         {/* Mobile Sidebar Toggle Button */}
         {isMobile && (
@@ -162,8 +160,6 @@ const AdminLayout = () => {
           </div>
         </main>
       </div>
-
-      {/* ❌ No Footer for Admin */}
     </div>
   );
 };

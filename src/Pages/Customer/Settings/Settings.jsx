@@ -1,26 +1,26 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FaBell,
   FaEnvelope,
   FaSms,
-  FaToggleOn,
-  FaToggleOff,
-  FaLanguage,
-  FaGlobe,
   FaMoon,
   FaSun,
+  FaTag,
 } from "react-icons/fa";
 import { Button } from "../../../Components/Common";
+import { useDarkMode } from "../../../Contexts/DarkModeContext"; // ← Import
 
 const Settings = () => {
+  const navigate = useNavigate();
+  const { darkMode, toggleDarkMode } = useDarkMode(); // ← Use dark mode
+
   const [settings, setSettings] = useState({
     emailNotifications: true,
     smsNotifications: true,
     orderUpdates: true,
     promotions: false,
-    darkMode: false,
-    language: "en",
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -36,7 +36,6 @@ const Settings = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
@@ -64,13 +63,15 @@ const Settings = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800">Settings</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+        Settings
+      </h1>
 
       {success && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm"
+          className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm dark:bg-green-900/30 dark:border-green-800 dark:text-green-400"
         >
           Settings saved successfully!
         </motion.div>
@@ -78,8 +79,8 @@ const Settings = () => {
 
       <div className="space-y-4">
         {/* Notification Settings */}
-        <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        <div className="bg-white rounded-2xl shadow-sm p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 dark:text-white">
             <FaBell className="text-primary-600" />
             Notification Preferences
           </h3>
@@ -87,12 +88,12 @@ const Settings = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <FaEnvelope className="text-gray-400" />
+                <FaEnvelope className="text-gray-400 dark:text-gray-500" />
                 <div>
-                  <p className="font-medium text-gray-800">
+                  <p className="font-medium text-gray-800 dark:text-white">
                     Email Notifications
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Receive updates via email
                   </p>
                 </div>
@@ -105,10 +106,12 @@ const Settings = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <FaSms className="text-gray-400" />
+                <FaSms className="text-gray-400 dark:text-gray-500" />
                 <div>
-                  <p className="font-medium text-gray-800">SMS Notifications</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="font-medium text-gray-800 dark:text-white">
+                    SMS Notifications
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Receive updates via SMS
                   </p>
                 </div>
@@ -121,10 +124,12 @@ const Settings = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <FaBell className="text-gray-400" />
+                <FaBell className="text-gray-400 dark:text-gray-500" />
                 <div>
-                  <p className="font-medium text-gray-800">Order Updates</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="font-medium text-gray-800 dark:text-white">
+                    Order Updates
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Receive order status updates
                   </p>
                 </div>
@@ -137,12 +142,12 @@ const Settings = () => {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <FaTag className="text-gray-400" />
+                <FaTag className="text-gray-400 dark:text-gray-500" />
                 <div>
-                  <p className="font-medium text-gray-800">
+                  <p className="font-medium text-gray-800 dark:text-white">
                     Promotions & Offers
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Receive promotional emails
                   </p>
                 </div>
@@ -155,72 +160,50 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Appearance Settings */}
-        <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-            <FaGlobe className="text-primary-600" />
-            Appearance & Language
+        {/* Appearance Settings - Dark Mode */}
+        <div className="bg-white rounded-2xl shadow-sm p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 dark:text-white">
+            Appearance
           </h3>
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {settings.darkMode ? (
-                  <FaMoon className="text-gray-400" />
+                {darkMode ? (
+                  <FaMoon className="text-gray-600 dark:text-gray-300" />
                 ) : (
-                  <FaSun className="text-gray-400" />
+                  <FaSun className="text-gray-400 dark:text-gray-500" />
                 )}
                 <div>
-                  <p className="font-medium text-gray-800">Dark Mode</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="font-medium text-gray-800 dark:text-white">
+                    Dark Mode
+                  </p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Toggle dark/light theme
                   </p>
                 </div>
               </div>
               <ToggleSwitch
-                enabled={settings.darkMode}
-                onChange={() => handleToggle("darkMode")}
+                enabled={darkMode}
+                onChange={toggleDarkMode} // ← Use toggle from context
               />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <FaLanguage className="text-gray-400" />
-                <div>
-                  <p className="font-medium text-gray-800">Language</p>
-                  <p className="text-sm text-gray-500">
-                    Select your preferred language
-                  </p>
-                </div>
-              </div>
-              <select
-                value={settings.language}
-                onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, language: e.target.value }))
-                }
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                <option value="en">English</option>
-                <option value="ha">Hausa</option>
-                <option value="yo">Yoruba</option>
-                <option value="ig">Igbo</option>
-                <option value="pcm">Pidgin</option>
-              </select>
             </div>
           </div>
         </div>
 
         {/* Account Settings */}
-        <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-2xl shadow-sm p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4 dark:text-white">
             Account Settings
           </h3>
 
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-800">Change Password</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-gray-800 dark:text-white">
+                  Change Password
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Update your password regularly
                 </p>
               </div>
@@ -232,10 +215,12 @@ const Settings = () => {
               </Button>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+            <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
               <div>
-                <p className="font-medium text-gray-800">Delete Account</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-medium text-gray-800 dark:text-white">
+                  Delete Account
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   Permanently delete your account
                 </p>
               </div>

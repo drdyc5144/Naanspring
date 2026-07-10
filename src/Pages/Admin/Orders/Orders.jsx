@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   FaEye,
@@ -12,18 +12,18 @@ import {
   FaBox,
   FaPrint,
   FaDownload,
+  FaPlus,
 } from "react-icons/fa";
-import { Button, Loader, Modal } from "../../../Components/Common";
+import { Button, Loader, StatusBadge } from "../../../Components/Common";
 import { orderService } from "../../../Service/order.service";
 
 const AdminOrders = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const statusOptions = [
     { value: "all", label: "All Orders" },
@@ -103,9 +103,8 @@ const AdminOrders = () => {
     }
   };
 
-  const getStatusIcon = (status) => {
-    const Icon = statusIcons[status] || FaBox;
-    return <Icon className="w-4 h-4" />;
+  const handleViewOrder = (orderId) => {
+    navigate(`/admin/orders/${orderId}`);
   };
 
   if (isLoading) {
@@ -243,10 +242,7 @@ const AdminOrders = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => {
-                              setSelectedOrder(order);
-                              setIsModalOpen(true);
-                            }}
+                            onClick={() => handleViewOrder(order.id)}
                             className="p-2 text-gray-400 hover:text-primary-600 transition-colors"
                             title="View Details"
                           >
@@ -276,127 +272,6 @@ const AdminOrders = () => {
           </p>
         </div>
       )}
-
-      {/* Order Details Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={`Order #${selectedOrder?.id}`}
-        size="lg"
-      >
-        {selectedOrder && (
-          <div className="space-y-4">
-            {/* Customer Info */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="text-sm font-medium text-gray-500">Customer</h4>
-                <p className="font-medium text-gray-800">
-                  {selectedOrder.customerName}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {selectedOrder.customerEmail}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {selectedOrder.customerPhone}
-                </p>
-              </div>
-              <div>
-                <h4 className="text-sm font-medium text-gray-500">
-                  Order Date
-                </h4>
-                <p className="font-medium text-gray-800">
-                  {new Date(selectedOrder.createdAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {new Date(selectedOrder.createdAt).toLocaleTimeString()}
-                </p>
-              </div>
-            </div>
-
-            {/* Shipping Address */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-500">
-                Shipping Address
-              </h4>
-              <p className="text-gray-800">{selectedOrder.shippingAddress}</p>
-            </div>
-
-            {/* Order Items */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-500 mb-2">
-                Order Items
-              </h4>
-              <div className="space-y-2">
-                {selectedOrder.items?.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between py-2 border-b border-gray-100"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
-                        <img
-                          src={item.image || "/placeholder-product.jpg"}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-800">{item.name}</p>
-                        <p className="text-sm text-gray-500">
-                          Qty: {item.quantity}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="font-medium text-gray-800">
-                      ₦{(item.price * item.quantity).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Order Summary */}
-            <div className="border-t border-gray-200 pt-4">
-              <div className="space-y-1">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Subtotal</span>
-                  <span className="font-medium">
-                    ₦{selectedOrder.subtotal?.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Shipping</span>
-                  <span className="font-medium">
-                    ₦{selectedOrder.shipping?.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500">Tax (7.5%)</span>
-                  <span className="font-medium">
-                    ₦{selectedOrder.tax?.toLocaleString()}
-                  </span>
-                </div>
-                <div className="flex justify-between font-bold text-lg pt-2 border-t border-gray-200">
-                  <span>Total</span>
-                  <span className="text-primary-800">
-                    ₦{selectedOrder.total?.toLocaleString()}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
-              <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-                Close
-              </Button>
-              <Button variant="primary">
-                <FaPrint className="w-4 h-4 mr-2" />
-                Print Invoice
-              </Button>
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 };
