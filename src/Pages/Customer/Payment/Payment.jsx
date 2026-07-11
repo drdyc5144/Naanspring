@@ -9,7 +9,7 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 import { Button, Input } from "../../../Components/Common";
-import { paymentService } from "../../../Service/payment.service";
+import paymentService from "../../../Service/payment.service";
 
 const Payment = () => {
   const location = useLocation();
