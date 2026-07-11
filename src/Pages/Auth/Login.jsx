@@ -18,6 +18,29 @@ const Login = () => {
 
   const from = location.state?.from?.pathname || "/account/dashboard";
 
+  // ✅ Demo credentials
+  const DEMO_CREDENTIALS = {
+    customer: { email: "customer@naanspring.com", password: "password123" },
+    admin: { email: "admin@naanspring.com", password: "admin123" },
+  };
+
+  // ✅ Auto-fill demo credentials
+  const fillDemoCredentials = (role) => {
+    if (role === "customer") {
+      setFormData({
+        email: DEMO_CREDENTIALS.customer.email,
+        password: DEMO_CREDENTIALS.customer.password,
+      });
+    } else if (role === "admin") {
+      setFormData({
+        email: DEMO_CREDENTIALS.admin.email,
+        password: DEMO_CREDENTIALS.admin.password,
+      });
+    }
+    // Clear any previous errors
+    setErrors({});
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email) {
@@ -153,8 +176,35 @@ const Login = () => {
           </Button>
         </form>
 
+        {/* ✅ DEMO CREDENTIALS BUTTONS */}
+        <div className="mt-4 space-y-3">
+          <p className="text-xs text-gray-500 text-center">
+            Quick Login with Demo Account:
+          </p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("customer")}
+              className="flex-1 px-4 py-2.5 text-sm bg-green-50 text-green-700 rounded-lg border border-green-200 hover:bg-green-100 transition-colors font-medium"
+            >
+              🧑 Customer
+            </button>
+            <button
+              type="button"
+              onClick={() => fillDemoCredentials("admin")}
+              className="flex-1 px-4 py-2.5 text-sm bg-purple-50 text-purple-700 rounded-lg border border-purple-200 hover:bg-purple-100 transition-colors font-medium"
+            >
+              👨‍💼 Admin
+            </button>
+          </div>
+          <div className="text-[10px] text-gray-400 text-center space-y-0.5">
+            <p>Customer: customer@naanspring.com / password123</p>
+            <p>Admin: admin@naanspring.com / admin123</p>
+          </div>
+        </div>
+
         {/* Register Link */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Don't have an account?{" "}
             <Link
@@ -163,17 +213,6 @@ const Login = () => {
             >
               Create one now
             </Link>
-          </p>
-        </div>
-
-        {/* Demo Credentials */}
-        <div className="mt-4 p-4 bg-gray-50 rounded-md">
-          <p className="text-xs text-gray-500 text-center">Demo Credentials:</p>
-          <p className="text-xs text-gray-500 text-center">
-            Customer: customer@naanspring.com / password123
-          </p>
-          <p className="text-xs text-gray-500 text-center">
-            Admin: admin@naanspring.com / admin123
           </p>
         </div>
       </motion.div>

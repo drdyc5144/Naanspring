@@ -35,7 +35,7 @@ const OTPVerification = lazy(() => import("../Pages/Auth/OTPVerification"));
 
 // Customer Pages
 const CustomerDashboard = lazy(
-  () => import("../Pages/Customer/Dashboard/Dashboard"), // ✅ fixed
+  () => import("../Pages/Customer/Dashboard/Dashboard"),
 );
 const Cart = lazy(() => import("../Pages/Customer/Cart/Cart"));
 const Checkout = lazy(() => import("../Pages/Customer/Checkout/Checkout"));
@@ -61,14 +61,13 @@ const AdminDashboard = lazy(() => import("../Pages/Admin/Dashboard/Dashboard"));
 const AdminProducts = lazy(() => import("../Pages/Admin/Products/Products"));
 const AddProduct = lazy(() => import("../Pages/Admin/AddProduct/AddProduct"));
 const EditProduct = lazy(
-  () => import("../Pages/Admin/EditProduct/EditProduct"), // ✅ fixed
+  () => import("../Pages/Admin/EditProduct/EditProduct"),
 );
 const AdminCategories = lazy(
   () => import("../Pages/Admin/Categories/Categories"),
 );
 const AdminOrders = lazy(() => import("../Pages/Admin/Orders/Orders"));
 const AdminOrderDetails = lazy(
-  // ← ADDED: Admin Order Details
   () => import("../Pages/Admin/Orders/OrderDetails"),
 );
 const AdminCustomers = lazy(() => import("../Pages/Admin/Customers/Customers"));
@@ -86,87 +85,40 @@ const AdminChangePassword = lazy(
 );
 
 // Error Pages
-const NotFound = lazy(() => import("../Pages/NotFound/NotFound")); // ✅ fixed
-const Unauthorized = lazy(() => import("../Pages/Unauthorized/Unauthorized")); // ✅ fixed
+const NotFound = lazy(() => import("../Pages/NotFound/NotFound"));
+const Unauthorized = lazy(() => import("../Pages/Unauthorized/Unauthorized"));
 
 // ============================================================
-// 🔒 PROTECTED ROUTE COMPONENT (COMMENTED OUT FOR TESTING)
-// ============================================================
-// Uncomment this when you want to enable authentication
-// const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-//   const { isAuthenticated, user } = useAuth();
-//
-//   if (!isAuthenticated) {
-//     return <Navigate to="/login" replace />;
-//   }
-//
-//   if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
-//     return <Navigate to="/unauthorized" replace />;
-//   }
-//
-//   return children;
-// };
-
-// ============================================================
-// 🟢 TEMPORARY: Protected Route that allows all access (FOR TESTING)
+// 🔒 PROTECTED ROUTE COMPONENT (ENABLED)
 // ============================================================
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  // 🔓 COMMENT THIS OUT WHEN TESTING - Allows all access without login
-  console.log(
-    "🔓 ProtectedRoute is DISABLED - Allowing all access for testing",
-  );
-  return children;
+  const { isAuthenticated, user } = useAuth();
 
-  // 🔒 UNCOMMENT THIS WHEN DONE TESTING - Enables authentication
-  // const { isAuthenticated, user } = useAuth();
-  //
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" replace />;
-  // }
-  //
-  // if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
-  //   return <Navigate to="/unauthorized" replace />;
-  // }
-  //
-  // return children;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles.length > 0 && !allowedRoles.includes(user?.role)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return children;
 };
 
 // ============================================================
-// 🔓 PUBLIC ROUTE COMPONENT (COMMENTED OUT FOR TESTING)
-// ============================================================
-// Uncomment this when you want to enable authentication
-// const PublicRoute = ({ children }) => {
-//   const { isAuthenticated, user } = useAuth();
-//
-//   if (isAuthenticated) {
-//     if (user?.role === "admin") {
-//       return <Navigate to="/admin/dashboard" replace />;
-//     }
-//     return <Navigate to="/account/dashboard" replace />;
-//   }
-//
-//   return children;
-// };
-
-// ============================================================
-// 🟢 TEMPORARY: Public Route that allows all access (FOR TESTING)
+// 🔓 PUBLIC ROUTE COMPONENT (ENABLED)
 // ============================================================
 const PublicRoute = ({ children }) => {
-  // 🔓 COMMENT THIS OUT WHEN TESTING - Allows all access without redirect
-  console.log("🔓 PublicRoute is DISABLED - Allowing all access for testing");
-  return children;
+  const { isAuthenticated, user } = useAuth();
 
-  // 🔒 UNCOMMENT THIS WHEN DONE TESTING - Enables authentication redirect
-  // const { isAuthenticated, user } = useAuth();
-  //
-  // if (isAuthenticated) {
-  //   if (user?.role === "admin") {
-  //     return <Navigate to="/admin/dashboard" replace />;
-  //   }
-  //   return <Navigate to="/account/dashboard" replace />;
-  // }
-  //
-  // return children;
+  if (isAuthenticated) {
+    if (user?.role === "admin") {
+      return <Navigate to="/admin/dashboard" replace />;
+    }
+    return <Navigate to="/account/dashboard" replace />;
+  }
+
+  return children;
 };
 
 function AppRoutes() {
@@ -270,7 +222,6 @@ function AppRoutes() {
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
           <Route path="/admin/categories" element={<AdminCategories />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
-          {/* ✅ ADDED: Admin Order Details Route */}
           <Route path="/admin/orders/:id" element={<AdminOrderDetails />} />
           <Route path="/admin/customers" element={<AdminCustomers />} />
           <Route path="/admin/inventory" element={<Inventory />} />

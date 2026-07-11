@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // ← Added useLocation
 import {
   FaBars,
   FaTimes,
@@ -19,6 +19,7 @@ const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
   const { totalItems } = useCart();
   const navigate = useNavigate();
+  const location = useLocation(); // ← Added for active state
 
   useEffect(() => {
     const handleScroll = () => {
@@ -45,6 +46,14 @@ const Navbar = () => {
     { to: "/contact", label: "Contact" },
   ];
 
+  // ✅ Check if link is active
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -70,15 +79,25 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                className="text-gray-600 hover:text-primary-800 transition-colors font-medium"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.to);
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`
+                    relative text-gray-600 hover:text-primary-800 transition-colors font-medium
+                    ${active ? "text-primary-800" : ""}
+                  `}
+                >
+                  {link.label}
+                  {/* ✅ Active Underline */}
+                  {active && (
+                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-primary-600 rounded-full" />
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Search & Actions */}
@@ -145,17 +164,33 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-primary-800 transition-colors"
-          >
-            {isOpen ? (
-              <FaTimes className="w-6 h-6" />
-            ) : (
-              <FaBars className="w-6 h-6" />
-            )}
-          </button>
+          {/* Mobile Actions */}
+          <div className="flex items-center gap-3 md:hidden">
+            {/* Cart Icon */}
+            <Link
+              to="/account/cart"
+              className="relative p-2 text-gray-600 hover:text-primary-800 transition-colors"
+            >
+              <FaShoppingCart className="w-5 h-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-secondary-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 text-gray-600 hover:text-primary-800 transition-colors"
+            >
+              {isOpen ? (
+                <FaTimes className="w-6 h-6" />
+              ) : (
+                <FaBars className="w-6 h-6" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -175,16 +210,26 @@ const Navbar = () => {
 
             {/* Navigation Links */}
             <div className="mt-4 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  className="block py-2 text-gray-600 hover:text-primary-800 transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const active = isActive(link.to);
+                return (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    className={`
+                      block py-2 transition-colors
+                      ${
+                        active
+                          ? "text-primary-800 font-semibold border-l-4 border-primary-600 pl-3"
+                          : "text-gray-600 hover:text-primary-800 pl-4"
+                      }
+                    `}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
 
             {/* Auth Actions */}
