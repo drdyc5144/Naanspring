@@ -56,7 +56,8 @@ const AdminLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Navbar - Fixed at top */}
-      <AdminNavbar /> {/* ✅ Changed from Navbar to AdminNavbar */}
+      <AdminNavbar />
+
       <div className="flex flex-1 pt-16">
         {/* Mobile Sidebar Toggle Button */}
         {isMobile && (
@@ -145,7 +146,7 @@ const AdminLayout = () => {
           />
         )}
 
-        {/* Main Content */}
+        {/* ✅ Main Content - Added container-custom */}
         <main
           className={`
           flex-1 min-h-screen w-full
@@ -153,7 +154,7 @@ const AdminLayout = () => {
           transition-all duration-300
         `}
         >
-          <div className="p-4 sm:p-6">
+          <div className="container-custom py-4 sm:py-6">
             <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6">
               <Outlet />
             </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import {
   FaStore,
@@ -14,20 +14,29 @@ import {
   FaYoutube,
   FaWhatsapp,
   FaShippingFast,
-  FaDollarSign,
-  FaPercentage,
+  FaMoneyBillWave,
   FaCheckCircle,
   FaTimes,
   FaImage,
+  FaTrash,
 } from "react-icons/fa";
 import { Button, Input } from "../../../Components/Common";
 import { storeService } from "../../../Service/store.service";
+
+// ✅ Naira icon component
+const NairaIcon = ({ className = "w-5 h-5" }) => (
+  <span className={`font-bold text-primary-600 ${className}`}>₦</span>
+);
 
 const StoreSettings = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [logoFile, setLogoFile] = useState(null);
+  const fileInputRef = useRef(null);
+
   const [formData, setFormData] = useState({
     // General Settings
     storeName: "Naanspring",
@@ -36,6 +45,7 @@ const StoreSettings = () => {
     storePhone: "+234 800 123 4567",
     storeAddress: "123 Food Street, Lagos, Nigeria",
     storeWebsite: "www.naanspring.com",
+    storeLogo: null,
 
     // Business Hours
     businessHours: {
@@ -87,11 +97,6 @@ const StoreSettings = () => {
   const fetchStoreSettings = async () => {
     setIsLoading(true);
     try {
-      // Mock data - replace with actual API call
-      // const response = await storeService.getStoreSettings()
-      // setFormData(response.data)
-
-      // Using mock data for now
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (error) {
       console.error("Error fetching store settings:", error);
@@ -103,7 +108,6 @@ const StoreSettings = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // await storeService.updateStoreSettings(formData)
       await new Promise((resolve) => setTimeout(resolve, 1500));
       setSuccess(true);
       setTimeout(() => setSuccess(false), 5000);
@@ -154,11 +158,66 @@ const StoreSettings = () => {
     }));
   };
 
+  // ✅ Logo upload handlers
+  const handleLogoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleLogoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (max 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        alert("Logo size must be less than 2MB");
+        return;
+      }
+
+      // Validate file type
+      if (
+        ![
+          "image/jpeg",
+          "image/png",
+          "image/webp",
+          "image/gif",
+          "image/svg+xml",
+        ].includes(file.type)
+      ) {
+        alert("Please upload a valid image (JPEG, PNG, WEBP, GIF, SVG)");
+        return;
+      }
+
+      setLogoFile(file);
+
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result);
+        setFormData((prev) => ({
+          ...prev,
+          storeLogo: reader.result,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    setFormData((prev) => ({
+      ...prev,
+      storeLogo: null,
+    }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const tabs = [
     { id: "general", label: "General", icon: FaStore },
     { id: "hours", label: "Business Hours", icon: FaClock },
     { id: "shipping", label: "Shipping", icon: FaShippingFast },
-    { id: "payment", label: "Payment", icon: FaDollarSign },
+    { id: "payment", label: "Payment", icon: FaMoneyBillWave },
     { id: "social", label: "Social Media", icon: FaGlobe },
     { id: "seo", label: "SEO", icon: FaGlobe },
   ];
@@ -183,43 +242,45 @@ const StoreSettings = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Store Settings</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Store Settings
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">
             Manage your store configuration and preferences
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {success && (
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex items-center gap-2 text-green-600 text-sm bg-green-50 px-4 py-2 rounded-lg"
+              className="flex items-center gap-2 text-green-600 text-xs sm:text-sm bg-green-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg w-full sm:w-auto"
             >
-              <FaCheckCircle className="w-4 h-4" />
-              Settings saved successfully!
+              <FaCheckCircle className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="truncate">Settings saved!</span>
             </motion.div>
           )}
           <Button
             variant="primary"
             onClick={handleSave}
             isLoading={isSaving}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-2.5"
           >
             <FaSave className="w-4 h-4" />
-            Save Settings
+            <span>Save Settings</span>
           </Button>
         </div>
       </div>
 
       {/* Tabs */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
-        <div className="border-b border-gray-200">
-          <nav className="flex overflow-x-auto px-4">
+        <div className="border-b border-gray-200 overflow-x-auto">
+          <nav className="flex px-2 sm:px-4 min-w-max">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -228,7 +289,7 @@ const StoreSettings = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`
-                    flex items-center gap-2 px-4 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap
+                    flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm font-medium border-b-2 transition-colors whitespace-nowrap
                     ${
                       isActive
                         ? "border-primary-600 text-primary-600"
@@ -236,8 +297,8 @@ const StoreSettings = () => {
                     }
                   `}
                 >
-                  <Icon className="w-4 h-4" />
-                  {tab.label}
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="hidden xs:inline">{tab.label}</span>
                 </button>
               );
             })}
@@ -245,11 +306,11 @@ const StoreSettings = () => {
         </div>
 
         {/* Tab Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* General Settings */}
           {activeTab === "general" && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                 General Information
               </h3>
 
@@ -309,25 +370,56 @@ const StoreSettings = () => {
                 icon={FaGlobe}
               />
 
-              {/* Logo Upload */}
+              {/* ✅ Logo Upload - Fixed */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
                   Store Logo
                 </label>
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary-500 transition-colors">
-                  <FaImage className="w-10 h-10 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-500">
-                    Click to upload or drag and drop
-                  </p>
-                  <p className="text-xs text-gray-400">
-                    PNG, JPG, WEBP (Max 2MB)
-                  </p>
-                  <input type="file" className="hidden" accept="image/*" />
+                <div
+                  onClick={handleLogoClick}
+                  className="border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center hover:border-primary-500 transition-colors cursor-pointer"
+                >
+                  {logoPreview ? (
+                    <div className="relative">
+                      <img
+                        src={logoPreview}
+                        alt="Store Logo"
+                        className="max-h-32 mx-auto object-contain"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveLogo();
+                        }}
+                        className="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      >
+                        <FaTrash className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <FaImage className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 mx-auto mb-2" />
+                      <p className="text-xs sm:text-sm text-gray-500">
+                        Click to upload or drag and drop
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        PNG, JPG, WEBP, SVG (Max 2MB)
+                      </p>
+                    </>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleLogoChange}
+                  />
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 pt-2">
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 pt-2">
+                <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-700">
                   <input
                     type="checkbox"
                     checked={formData.maintenanceMode}
@@ -338,7 +430,7 @@ const StoreSettings = () => {
                   />
                   Enable Maintenance Mode
                 </label>
-                <label className="flex items-center gap-2 text-sm text-gray-700">
+                <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-700">
                   <input
                     type="checkbox"
                     checked={formData.allowGuestCheckout}
@@ -356,65 +448,71 @@ const StoreSettings = () => {
           {/* Business Hours */}
           {activeTab === "hours" && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                 Business Hours
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {daysOfWeek.map((day, index) => (
                   <div
                     key={day}
-                    className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg"
+                    className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-3 bg-gray-50 rounded-lg"
                   >
-                    <div className="w-28 font-medium text-gray-700">
+                    <div className="w-full sm:w-28 font-medium text-gray-700 text-sm sm:text-base">
                       {dayLabels[index]}
                     </div>
-                    <label className="flex items-center gap-2 text-sm text-gray-600">
-                      <input
-                        type="checkbox"
-                        checked={!formData.businessHours[day].closed}
-                        onChange={(e) =>
-                          handleBusinessHoursChange(
-                            day,
-                            "closed",
-                            !e.target.checked,
-                          )
-                        }
-                        className="w-4 h-4 text-primary-600 rounded"
-                      />
-                      Open
-                    </label>
-                    {!formData.businessHours[day].closed && (
-                      <>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-600">
                         <input
-                          type="time"
-                          value={formData.businessHours[day].open}
+                          type="checkbox"
+                          checked={!formData.businessHours[day].closed}
                           onChange={(e) =>
                             handleBusinessHoursChange(
                               day,
-                              "open",
-                              e.target.value,
+                              "closed",
+                              !e.target.checked,
                             )
                           }
-                          className="px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
+                          className="w-4 h-4 text-primary-600 rounded"
                         />
-                        <span className="text-gray-400">to</span>
-                        <input
-                          type="time"
-                          value={formData.businessHours[day].close}
-                          onChange={(e) =>
-                            handleBusinessHoursChange(
-                              day,
-                              "close",
-                              e.target.value,
-                            )
-                          }
-                          className="px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500"
-                        />
-                      </>
-                    )}
-                    {formData.businessHours[day].closed && (
-                      <span className="text-sm text-gray-400">Closed</span>
-                    )}
+                        Open
+                      </label>
+                      {!formData.businessHours[day].closed && (
+                        <>
+                          <input
+                            type="time"
+                            value={formData.businessHours[day].open}
+                            onChange={(e) =>
+                              handleBusinessHoursChange(
+                                day,
+                                "open",
+                                e.target.value,
+                              )
+                            }
+                            className="px-2 sm:px-3 py-1 text-xs sm:text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 w-auto"
+                          />
+                          <span className="text-gray-400 text-xs sm:text-sm">
+                            to
+                          </span>
+                          <input
+                            type="time"
+                            value={formData.businessHours[day].close}
+                            onChange={(e) =>
+                              handleBusinessHoursChange(
+                                day,
+                                "close",
+                                e.target.value,
+                              )
+                            }
+                            className="px-2 sm:px-3 py-1 text-xs sm:text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary-500 w-auto"
+                          />
+                        </>
+                      )}
+                      {formData.businessHours[day].closed && (
+                        <span className="text-xs sm:text-sm text-gray-400">
+                          Closed
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -424,11 +522,11 @@ const StoreSettings = () => {
           {/* Shipping Settings */}
           {activeTab === "shipping" && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                 Shipping Settings
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Input
                   label="Standard Shipping Fee (₦)"
                   type="number"
@@ -436,7 +534,7 @@ const StoreSettings = () => {
                   onChange={(e) =>
                     handleChange(null, "shippingFee", e.target.value)
                   }
-                  icon={FaDollarSign}
+                  icon={() => <NairaIcon className="w-4 h-4" />}
                 />
                 <Input
                   label="Free Shipping Threshold (₦)"
@@ -445,7 +543,7 @@ const StoreSettings = () => {
                   onChange={(e) =>
                     handleChange(null, "freeShippingThreshold", e.target.value)
                   }
-                  icon={FaDollarSign}
+                  icon={() => <NairaIcon className="w-4 h-4" />}
                 />
               </div>
 
@@ -466,7 +564,7 @@ const StoreSettings = () => {
                   {formData.shippingZones.map((zone, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-sm flex items-center gap-2"
+                      className="px-2 sm:px-3 py-1 bg-primary-50 text-primary-700 rounded-full text-xs sm:text-sm flex items-center gap-1 sm:gap-2"
                     >
                       {zone}
                       <button
@@ -492,7 +590,7 @@ const StoreSettings = () => {
                         ]);
                       }
                     }}
-                    className="px-3 py-1 border-2 border-dashed border-gray-300 text-gray-500 rounded-full text-sm hover:border-primary-500 hover:text-primary-600 transition-colors"
+                    className="px-2 sm:px-3 py-1 border-2 border-dashed border-gray-300 text-gray-500 rounded-full text-xs sm:text-sm hover:border-primary-500 hover:text-primary-600 transition-colors"
                   >
                     + Add Zone
                   </button>
@@ -504,7 +602,7 @@ const StoreSettings = () => {
           {/* Payment Settings */}
           {activeTab === "payment" && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                 Payment Settings
               </h3>
 
@@ -517,11 +615,11 @@ const StoreSettings = () => {
                   onChange={(e) =>
                     handleChange(null, "currency", e.target.value)
                   }
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                 >
-                  <option value="NGN">NGN - Nigerian Naira</option>
-                  <option value="USD">USD - US Dollar</option>
-                  <option value="EUR">EUR - Euro</option>
+                  <option value="NGN">₦ NGN - Nigerian Naira</option>
+                  <option value="USD">$ USD - US Dollar</option>
+                  <option value="EUR">€ EUR - Euro</option>
                 </select>
               </div>
 
@@ -602,14 +700,14 @@ const StoreSettings = () => {
           {/* Social Media */}
           {activeTab === "social" && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                 Social Media Links
               </h3>
 
               <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-600 text-white rounded-lg">
-                    <FaFacebook className="w-5 h-5" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                  <div className="p-2 bg-blue-600 text-white rounded-lg flex-shrink-0">
+                    <FaFacebook className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <Input
                     placeholder="Facebook URL"
@@ -617,13 +715,13 @@ const StoreSettings = () => {
                     onChange={(e) =>
                       handleSocialMediaChange("facebook", e.target.value)
                     }
-                    className="flex-1"
+                    className="flex-1 w-full"
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-400 text-white rounded-lg">
-                    <FaTwitter className="w-5 h-5" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                  <div className="p-2 bg-blue-400 text-white rounded-lg flex-shrink-0">
+                    <FaTwitter className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <Input
                     placeholder="Twitter URL"
@@ -631,13 +729,13 @@ const StoreSettings = () => {
                     onChange={(e) =>
                       handleSocialMediaChange("twitter", e.target.value)
                     }
-                    className="flex-1"
+                    className="flex-1 w-full"
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-pink-600 text-white rounded-lg">
-                    <FaInstagram className="w-5 h-5" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                  <div className="p-2 bg-pink-600 text-white rounded-lg flex-shrink-0">
+                    <FaInstagram className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <Input
                     placeholder="Instagram URL"
@@ -645,13 +743,13 @@ const StoreSettings = () => {
                     onChange={(e) =>
                       handleSocialMediaChange("instagram", e.target.value)
                     }
-                    className="flex-1"
+                    className="flex-1 w-full"
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-red-600 text-white rounded-lg">
-                    <FaYoutube className="w-5 h-5" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                  <div className="p-2 bg-red-600 text-white rounded-lg flex-shrink-0">
+                    <FaYoutube className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <Input
                     placeholder="YouTube URL"
@@ -659,13 +757,13 @@ const StoreSettings = () => {
                     onChange={(e) =>
                       handleSocialMediaChange("youtube", e.target.value)
                     }
-                    className="flex-1"
+                    className="flex-1 w-full"
                   />
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-500 text-white rounded-lg">
-                    <FaWhatsapp className="w-5 h-5" />
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                  <div className="p-2 bg-green-500 text-white rounded-lg flex-shrink-0">
+                    <FaWhatsapp className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   <Input
                     placeholder="WhatsApp URL"
@@ -673,7 +771,7 @@ const StoreSettings = () => {
                     onChange={(e) =>
                       handleSocialMediaChange("whatsapp", e.target.value)
                     }
-                    className="flex-1"
+                    className="flex-1 w-full"
                   />
                 </div>
               </div>
@@ -683,7 +781,7 @@ const StoreSettings = () => {
           {/* SEO Settings */}
           {activeTab === "seo" && (
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4">
                 SEO Settings
               </h3>
 
@@ -696,8 +794,7 @@ const StoreSettings = () => {
                 placeholder="Your store meta title"
               />
               <p className="text-xs text-gray-400 -mt-2">
-                Recommended length: 50-60 characters. Currently:{" "}
-                {formData.metaTitle.length} characters
+                Recommended: 50-60 chars. Current: {formData.metaTitle.length}
               </p>
 
               <div>
@@ -710,12 +807,12 @@ const StoreSettings = () => {
                   onChange={(e) =>
                     handleChange(null, "metaDescription", e.target.value)
                   }
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                   placeholder="Your store meta description"
                 />
                 <p className="text-xs text-gray-400">
-                  Recommended length: 150-160 characters. Currently:{" "}
-                  {formData.metaDescription.length} characters
+                  Recommended: 150-160 chars. Current:{" "}
+                  {formData.metaDescription.length}
                 </p>
               </div>
 
@@ -729,7 +826,7 @@ const StoreSettings = () => {
                   onChange={(e) =>
                     handleChange(null, "metaKeywords", e.target.value)
                   }
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="w-full px-4 py-2.5 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                   placeholder="foodstuff, groceries, online shopping, Nigeria"
                 />
                 <p className="text-xs text-gray-400">

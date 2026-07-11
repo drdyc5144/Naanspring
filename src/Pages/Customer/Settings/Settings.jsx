@@ -10,11 +10,11 @@ import {
   FaTag,
 } from "react-icons/fa";
 import { Button } from "../../../Components/Common";
-import { useDarkMode } from "../../../Contexts/DarkModeContext"; // ← Import
+import { useDarkMode } from "../../../Contexts/DarkModeContext";
 
 const Settings = () => {
   const navigate = useNavigate();
-  const { darkMode, toggleDarkMode } = useDarkMode(); // ← Use dark mode
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   const [settings, setSettings] = useState({
     emailNotifications: true,
@@ -49,7 +49,7 @@ const Settings = () => {
   const ToggleSwitch = ({ enabled, onChange }) => (
     <button
       onClick={onChange}
-      className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
+      className={`relative w-12 h-6 rounded-full transition-colors duration-200 flex-shrink-0 ${
         enabled ? "bg-primary-600" : "bg-gray-300"
       }`}
     >
@@ -62,8 +62,8 @@ const Settings = () => {
   );
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+    <div className="space-y-4 sm:space-y-6">
+      <h1 className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
         Settings
       </h1>
 
@@ -78,9 +78,9 @@ const Settings = () => {
       )}
 
       <div className="space-y-4">
-        {/* Notification Settings */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 dark:text-white">
+        {/* Notification Settings - UNCHANGED */}
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2 dark:text-white">
             <FaBell className="text-primary-600" />
             Notification Preferences
           </h3>
@@ -160,9 +160,9 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Appearance Settings - Dark Mode */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 dark:text-white">
+        {/* Appearance Settings - UNCHANGED */}
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 dark:text-white">
             Appearance
           </h3>
 
@@ -185,20 +185,21 @@ const Settings = () => {
               </div>
               <ToggleSwitch
                 enabled={darkMode}
-                onChange={toggleDarkMode} // ← Use toggle from context
+                onChange={toggleDarkMode}
               />
             </div>
           </div>
         </div>
 
-        {/* Account Settings */}
-        <div className="bg-white rounded-2xl shadow-sm p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4 dark:text-white">
+        {/* ✅ Account Settings - FIXED for mobile responsiveness */}
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 dark:bg-gray-800 dark:shadow-gray-900/50">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 dark:text-white">
             Account Settings
           </h3>
 
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            {/* Change Password - Mobile Responsive */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl">
               <div>
                 <p className="font-medium text-gray-800 dark:text-white">
                   Change Password
@@ -210,28 +211,40 @@ const Settings = () => {
               <Button
                 variant="outline"
                 onClick={() => navigate("/account/change-password")}
+                className="w-full sm:w-auto"
               >
                 Change Password
               </Button>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
+            {/* Delete Account - Mobile Responsive */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-100 dark:border-red-800/30">
               <div>
-                <p className="font-medium text-gray-800 dark:text-white">
+                <p className="font-medium text-red-600 dark:text-red-400">
                   Delete Account
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Permanently delete your account
                 </p>
               </div>
-              <Button variant="danger">Delete Account</Button>
+              <Button 
+                variant="danger" 
+                className="w-full sm:w-auto"
+              >
+                Delete Account
+              </Button>
             </div>
           </div>
         </div>
 
         {/* Save Button */}
         <div className="flex justify-end">
-          <Button variant="primary" onClick={handleSave} isLoading={isSaving}>
+          <Button 
+            variant="primary" 
+            onClick={handleSave} 
+            isLoading={isSaving}
+            className="w-full sm:w-auto"
+          >
             Save Settings
           </Button>
         </div>

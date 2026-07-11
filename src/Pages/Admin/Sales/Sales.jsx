@@ -77,21 +77,24 @@ const Sales = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Sales Report</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+            Sales Report
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500">
             Track your store's performance
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Header Actions - Mobile Responsive */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
           >
             <option value="today">Today</option>
             <option value="week">This Week</option>
@@ -99,152 +102,167 @@ const Sales = () => {
             <option value="quarter">This Quarter</option>
             <option value="year">This Year</option>
           </select>
-          <Button variant="outline" className="flex items-center gap-2">
-            <FaDownload className="w-4 h-4" />
-            Export
+          <Button
+            variant="outline"
+            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4 py-1.5 sm:py-2"
+          >
+            <FaDownload className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Export</span>
           </Button>
-          <Button variant="outline" className="flex items-center gap-2">
-            <FaPrint className="w-4 h-4" />
-            Print
+          <Button
+            variant="outline"
+            className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4 py-1.5 sm:py-2"
+          >
+            <FaPrint className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">Print</span>
           </Button>
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-xl shadow-sm p-5">
+      {/* Stats - Mobile Responsive */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-xs sm:text-sm text-gray-500">Total Revenue</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">
                 {formatCurrency(salesData.totalRevenue)}
               </p>
             </div>
-            <div className="p-3 bg-green-100 rounded-lg">
-              <FaMoneyBillWave className="w-6 h-6 text-green-600" />
+            <div className="p-2 sm:p-3 bg-green-100 rounded-lg">
+              <FaMoneyBillWave className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-1 text-sm">
+          <div className="mt-2 flex flex-wrap items-center gap-1 text-xs sm:text-sm">
             {salesData.comparison.revenue > 0 ? (
               <>
-                <FaArrowUp className="text-green-600" />
-                <span className="text-green-600">
+                <FaArrowUp className="text-green-600 w-3 h-3" />
+                <span className="text-green-600 font-medium">
                   {salesData.comparison.revenue}%
                 </span>
               </>
             ) : (
               <>
-                <FaArrowDown className="text-red-600" />
-                <span className="text-red-600">
+                <FaArrowDown className="text-red-600 w-3 h-3" />
+                <span className="text-red-600 font-medium">
                   {Math.abs(salesData.comparison.revenue)}%
                 </span>
               </>
             )}
-            <span className="text-gray-500">vs previous period</span>
+            <span className="text-gray-500 text-[10px] sm:text-xs">
+              vs previous period
+            </span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Orders</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-xs sm:text-sm text-gray-500">Total Orders</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">
                 {salesData.totalOrders}
               </p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <FaShoppingBag className="w-6 h-6 text-blue-600" />
+            <div className="p-2 sm:p-3 bg-blue-100 rounded-lg">
+              <FaShoppingBag className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
             </div>
           </div>
-          <div className="mt-2 flex items-center gap-1 text-sm">
+          <div className="mt-2 flex flex-wrap items-center gap-1 text-xs sm:text-sm">
             {salesData.comparison.orders > 0 ? (
               <>
-                <FaArrowUp className="text-green-600" />
-                <span className="text-green-600">
+                <FaArrowUp className="text-green-600 w-3 h-3" />
+                <span className="text-green-600 font-medium">
                   {salesData.comparison.orders}%
                 </span>
               </>
             ) : (
               <>
-                <FaArrowDown className="text-red-600" />
-                <span className="text-red-600">
+                <FaArrowDown className="text-red-600 w-3 h-3" />
+                <span className="text-red-600 font-medium">
                   {Math.abs(salesData.comparison.orders)}%
                 </span>
               </>
             )}
-            <span className="text-gray-500">vs previous period</span>
+            <span className="text-gray-500 text-[10px] sm:text-xs">
+              vs previous period
+            </span>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Average Order Value</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-xs sm:text-sm text-gray-500">
+                Average Order Value
+              </p>
+              <p className="text-sm sm:text-2xl font-bold text-gray-800">
                 {formatCurrency(salesData.averageOrderValue)}
               </p>
             </div>
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <FaUsers className="w-6 h-6 text-purple-600" />
+            <div className="p-2 sm:p-3 bg-purple-100 rounded-lg">
+              <FaUsers className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm p-5">
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Top Product Sales</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-xs sm:text-sm text-gray-500">
+                Top Product Sales
+              </p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-800">
                 {salesData.topProducts[0]?.sales || 0}
               </p>
             </div>
-            <div className="p-3 bg-orange-100 rounded-lg">
-              <FaBox className="w-6 h-6 text-orange-600" />
+            <div className="p-2 sm:p-3 bg-orange-100 rounded-lg">
+              <FaBox className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
             </div>
           </div>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-xs sm:text-sm text-gray-500 truncate">
             {salesData.topProducts[0]?.name || "No sales"}
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Top Products & Daily Sales */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Top Products */}
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">
             Top Selling Products
           </h3>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {salesData.topProducts.map((product, index) => {
               const maxSales = salesData.topProducts[0]?.sales || 1;
               const percentage = (product.sales / maxSales) * 100;
 
               return (
                 <div key={index}>
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-medium text-gray-400">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-1 gap-1 sm:gap-0">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <span className="text-xs sm:text-sm font-medium text-gray-400">
                         #{index + 1}
                       </span>
-                      <span className="font-medium text-gray-800">
+                      <span className="font-medium text-gray-800 text-sm sm:text-base">
                         {product.name}
                       </span>
                     </div>
-                    <div className="text-right">
-                      <span className="font-semibold text-gray-800">
+                    <div className="text-left sm:text-right">
+                      <span className="font-semibold text-gray-800 text-sm sm:text-base">
                         {product.sales} sales
                       </span>
-                      <span className="text-sm text-gray-500 ml-2">
+                      <span className="text-xs sm:text-sm text-gray-500 ml-1 sm:ml-2">
                         {formatCurrency(product.revenue)}
                       </span>
                     </div>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${percentage}%` }}
                       transition={{ duration: 0.5 }}
-                      className="bg-primary-600 h-2 rounded-full"
+                      className="bg-primary-600 h-1.5 sm:h-2 rounded-full"
                     />
                   </div>
                 </div>
@@ -254,26 +272,28 @@ const Sales = () => {
         </div>
 
         {/* Daily Sales Summary */}
-        <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6">
+          <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4">
             Recent Daily Sales
           </h3>
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {salesData.dailySales.map((day, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between p-3 border border-gray-100 rounded-lg"
+                className="flex items-center justify-between p-2 sm:p-3 border border-gray-100 rounded-lg"
               >
                 <div>
-                  <p className="font-medium text-gray-800">
+                  <p className="font-medium text-gray-800 text-sm sm:text-base">
                     {new Date(day.date).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                     })}
                   </p>
-                  <p className="text-sm text-gray-500">{day.orders} orders</p>
+                  <p className="text-xs sm:text-sm text-gray-500">
+                    {day.orders} orders
+                  </p>
                 </div>
-                <p className="font-semibold text-primary-800">
+                <p className="font-semibold text-primary-800 text-sm sm:text-base">
                   {formatCurrency(day.revenue)}
                 </p>
               </div>

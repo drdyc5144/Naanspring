@@ -7,7 +7,10 @@ const MainLayout = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-grow pt-24">
-        <Outlet />
+        {/* ✅ Add container-custom here */}
+        <div className="container-custom py-4 sm:py-6">
+          <Outlet />
+        </div>
       </main>
       <Footer />
     </div>
