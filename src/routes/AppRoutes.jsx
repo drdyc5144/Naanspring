@@ -35,7 +35,7 @@ const OTPVerification = lazy(() => import("../Pages/Auth/OTPVerification"));
 
 // Customer Pages
 const CustomerDashboard = lazy(
-  () => import("../pages/customer/Dashboard/Dashboard"),
+  () => import("../Pages/Customer/Dashboard/Dashboard"), // ✅ fixed
 );
 const Cart = lazy(() => import("../Pages/Customer/Cart/Cart"));
 const Checkout = lazy(() => import("../Pages/Customer/Checkout/Checkout"));
@@ -61,7 +61,7 @@ const AdminDashboard = lazy(() => import("../Pages/Admin/Dashboard/Dashboard"));
 const AdminProducts = lazy(() => import("../Pages/Admin/Products/Products"));
 const AddProduct = lazy(() => import("../Pages/Admin/AddProduct/AddProduct"));
 const EditProduct = lazy(
-  () => import("../Pages/admin/EditProduct/EditProduct"),
+  () => import("../Pages/Admin/EditProduct/EditProduct"), // ✅ fixed
 );
 const AdminCategories = lazy(
   () => import("../Pages/Admin/Categories/Categories"),
@@ -86,8 +86,8 @@ const AdminChangePassword = lazy(
 );
 
 // Error Pages
-const NotFound = lazy(() => import("../pages/NotFound/NotFound"));
-const Unauthorized = lazy(() => import("../pages/Unauthorized/Unauthorized"));
+const NotFound = lazy(() => import("../Pages/NotFound/NotFound")); // ✅ fixed
+const Unauthorized = lazy(() => import("../Pages/Unauthorized/Unauthorized")); // ✅ fixed
 
 // ============================================================
 // 🔒 PROTECTED ROUTE COMPONENT (COMMENTED OUT FOR TESTING)
