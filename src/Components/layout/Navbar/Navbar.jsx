@@ -8,8 +8,8 @@ import {
   FaShoppingCart,
   FaSearch,
 } from "react-icons/fa";
-import { useAuth } from "../../../hooks/useAuth";
-import { useCart } from "../../../hooks/useCart";
+import { useAuth } from "../../../Hooks/useAuth";
+import { useCart } from "../../../Hooks/useCart";
 import logo from "../../../assets/logo.png";
 
 const Navbar = () => {

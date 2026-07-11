@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaBell, FaUser, FaSignOutAlt } from "react-icons/fa";
-import { useAuth } from "../../../hooks/useAuth";
+import { useAuth } from "../../../Hooks/useAuth";
 import logo from "../../../assets/logo.png";
 
 const AdminNavbar = () => {
