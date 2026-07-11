@@ -9,21 +9,21 @@ import CustomerLayout from "../Components/layouts/CustomerLayout/CustomerLayout"
 import AdminLayout from "../Components/layouts/AdminLayout/AdminLayout";
 
 // Lazy load pages for better performance
-const Home = lazy(() => import("../pages/public/Home/Home"));
-const Shop = lazy(() => import("../pages/public/Shop/Shop"));
-const Categories = lazy(() => import("../pages/public/Categories/Categories"));
+const Home = lazy(() => import("../Pages/Public/Home/Home"));
+const Shop = lazy(() => import("../Pages/Public/Shop/Shop"));
+const Categories = lazy(() => import("../Pages/Public/Categories/Categories"));
 const ProductDetails = lazy(
-  () => import("../pages/public/ProductDetails/ProductDetails"),
+  () => import("../Pages/Public/ProductDetails/ProductDetails"),
 );
-const Search = lazy(() => import("../pages/public/Search/Search"));
-const About = lazy(() => import("../pages/public/About/About"));
-const Contact = lazy(() => import("../pages/public/Contact/Contact"));
-const FAQ = lazy(() => import("../pages/public/FAQ/FAQ"));
+const Search = lazy(() => import("../Pages/Public/Search/Search"));
+const About = lazy(() => import("../Pages/Public/About/About"));
+const Contact = lazy(() => import("../Pages/Public/Contact/Contact"));
+const FAQ = lazy(() => import("../Pages/Public/FAQ/FAQ"));
 const PrivacyPolicy = lazy(
-  () => import("../pages/public/PrivacyPolicy/PrivacyPolicy"),
+  () => import("../Pages/Public/PrivacyPolicy/PrivacyPolicy"),
 );
 const TermsConditions = lazy(
-  () => import("../pages/public/TermsConditions/TermsConditions"),
+  () => import("../Pages/Public/TermsConditions/TermsConditions"),
 );
 
 // Auth Pages
