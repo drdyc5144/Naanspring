@@ -123,11 +123,11 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start space-x-3">
                 <FaMapMarkerAlt className="mt-1 text-secondary-500 flex-shrink-0" />
-                <span>123 Food Street, Lagos, Nigeria</span>
+                <span>Opp. Assemblies of God Sabon Barki, Jos South 930104, Plateau, Nigeria</span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaPhone className="text-secondary-500 flex-shrink-0" />
-                <span>+234 800 123 4567</span>
+                <span>+234 8031574601</span>
               </li>
               <li className="flex items-center space-x-3">
                 <FaEnvelope className="text-secondary-500 flex-shrink-0" />

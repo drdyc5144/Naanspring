@@ -47,12 +47,13 @@ const Contact = () => {
     {
       icon: FaMapMarkerAlt,
       title: "Visit Us",
-      details: "123 Food Street, Lagos, Nigeria",
+      details:
+        "Opp. Assemblies of God Sabon Barki, Jos South 930104, Plateau, Nigeria",
     },
     {
       icon: FaPhone,
       title: "Call Us",
-      details: "+234 800 123 4567",
+      details: "+234 8031574601",
     },
     {
       icon: FaEnvelope,
